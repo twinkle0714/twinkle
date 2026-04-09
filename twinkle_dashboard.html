@@ -1,0 +1,590 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Twinkle Dashboard</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@300;400;500&family=Noto+Sans+JP:wght@300;400;500&display=swap" rel="stylesheet">
+<style>
+*{box-sizing:border-box;margin:0;padding:0;}
+:root{--mid:#C9958E;--dark:#A06860;--deep:#7D4A45;--text:#3D2B28;--text2:#7D5550;--border:#DEC4BF;}
+body{background:#F2E4E1;font-family:'Noto Sans JP',sans-serif;min-height:100vh;}
+.bg-texture{position:fixed;top:0;left:0;width:100%;height:100%;z-index:-1;background:radial-gradient(ellipse at 20% 20%,rgba(255,230,225,0.6) 0%,transparent 50%),radial-gradient(ellipse at 80% 70%,rgba(220,180,175,0.4) 0%,transparent 45%),#F2E4E1;}
+.corner-logo{position:fixed;bottom:14px;right:14px;width:60px;height:60px;border-radius:50%;overflow:hidden;opacity:0.45;z-index:200;pointer-events:none;border:2px solid rgba(201,149,142,0.3);}
+.corner-logo img{width:100%;height:100%;object-fit:cover;}
+.container{max-width:480px;margin:0 auto;padding:1rem;}
+.login-screen{min-height:560px;display:flex;flex-direction:column;align-items:center;justify-content:center;padding:2.5rem 2rem;text-align:center;background:rgba(242,228,225,0.55);border-radius:20px;border:0.5px solid rgba(201,149,142,0.25);margin-top:1rem;}
+.login-logo{width:175px;height:175px;border-radius:50%;overflow:hidden;margin:0 auto 1.25rem;border:2px solid rgba(201,149,142,0.45);}
+.login-logo img{width:100%;height:100%;object-fit:cover;}
+.login-title{font-family:'Cormorant Garamond',serif;font-size:46px;font-weight:400;color:#3D2B28;letter-spacing:0.08em;margin-bottom:4px;}
+.login-sub{font-size:11px;color:#A06860;margin-bottom:1.75rem;letter-spacing:0.18em;}
+.login-form{width:100%;max-width:255px;margin:0 auto;}
+.li{width:100%;padding:10px 14px;font-size:13px;border-radius:30px;border:0.5px solid rgba(201,149,142,0.55);background:rgba(255,255,255,0.78);color:#3D2B28;margin-bottom:10px;font-family:'Noto Sans JP',sans-serif;outline:none;}
+.li:focus{border-color:#A06860;}
+.lb{width:100%;padding:11px;font-size:13px;font-weight:500;border-radius:30px;border:none;background:linear-gradient(135deg,#C9958E,#A06860);color:#fff;cursor:pointer;letter-spacing:0.08em;}
+.lb:hover{background:linear-gradient(135deg,#A06860,#7D4A45);}
+.lerr{font-size:11px;color:#A06860;margin-top:8px;display:none;}
+.lsw{font-size:11px;color:#A06860;margin-top:12px;cursor:pointer;text-decoration:underline;}
+.asub{width:100%;max-width:255px;margin:10px auto 0;display:none;}
+.wrap{padding:1rem 0;display:none;}
+.nav{display:flex;gap:4px;margin-bottom:1.25rem;flex-wrap:wrap;}
+.nb{font-size:11px;padding:5px 11px;border-radius:20px;border:0.5px solid var(--border);background:rgba(255,255,255,0.5);color:var(--text2);cursor:pointer;letter-spacing:0.04em;}
+.nb.on{background:rgba(201,149,142,0.22);color:var(--deep);font-weight:500;border-color:var(--mid);}
+.nb.cb{background:var(--deep);color:#fff;border-color:var(--deep);}
+.pg{display:none;}.pg.on{display:block;}
+.card{background:rgba(255,255,255,0.62);border:0.5px solid rgba(201,149,142,0.28);border-radius:16px;padding:1rem 1.25rem;margin-bottom:1rem;}
+.ct{font-size:14px;font-weight:500;color:var(--text);margin-bottom:4px;}
+.cs{font-size:12px;color:var(--text2);margin-bottom:1rem;}
+.sl{font-size:11px;color:var(--text2);margin-bottom:8px;font-weight:500;letter-spacing:.08em;}
+.mg{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:8px;margin-bottom:1.5rem;}
+.mc{background:rgba(237,216,212,0.65);border-radius:12px;padding:.875rem;border:0.5px solid rgba(201,149,142,0.18);}
+.ml{font-size:11px;color:var(--text2);margin-bottom:4px;}
+.mv{font-size:20px;font-weight:500;color:var(--text);}
+.ms{font-size:11px;color:var(--dark);margin-top:3px;}
+.bb{background:rgba(201,149,142,0.22);border-radius:4px;height:6px;}
+.bf{height:6px;border-radius:4px;transition:width .6s;background:linear-gradient(90deg,#C9958E,#A06860);}
+.bn{display:flex;justify-content:space-between;margin-top:5px;font-size:11px;color:var(--text2);}
+.ph{display:flex;justify-content:space-between;align-items:center;margin-bottom:8px;}
+.pt{font-size:13px;color:var(--text);}
+.sf{display:grid;grid-template-columns:1fr auto 1fr auto;align-items:center;gap:8px;margin-bottom:10px;}
+.sf input[type=time]{padding:6px 8px;font-size:13px;border-radius:20px;border:0.5px solid var(--border);background:rgba(255,255,255,0.7);color:var(--text);width:100%;}
+.sf span{font-size:13px;color:var(--text2);text-align:center;}
+.ab{font-size:12px;padding:6px 14px;border-radius:20px;border:0.5px solid var(--mid);background:transparent;color:var(--deep);cursor:pointer;}
+.ab:hover{background:rgba(201,149,142,0.12);}
+.sl2{list-style:none;}
+.si{display:flex;justify-content:space-between;align-items:center;padding:8px 0;border-bottom:0.5px solid rgba(201,149,142,0.18);font-size:13px;color:var(--text);}
+.si:last-child{border-bottom:none;}
+.dur{font-weight:500;color:var(--dark);}
+.db2{font-size:11px;color:var(--text2);cursor:pointer;padding:2px 6px;border-radius:10px;border:0.5px solid var(--border);background:transparent;}
+.tr2{display:flex;justify-content:space-between;align-items:center;padding:10px 0 0;font-size:13px;font-weight:500;color:var(--text);border-top:0.5px solid rgba(201,149,142,0.18);margin-top:4px;}
+.abanner{background:linear-gradient(135deg,#7D4A45,#A06860);border-radius:14px;padding:1rem 1.25rem;margin-bottom:1.25rem;display:flex;align-items:flex-start;gap:12px;}
+.ai2{width:32px;height:32px;border-radius:50%;background:rgba(255,255,255,0.18);display:flex;align-items:center;justify-content:center;flex-shrink:0;font-size:14px;color:#fff;font-weight:500;}
+.ab2{flex:1;}
+.at{font-size:13px;font-weight:500;color:#fff;margin-bottom:2px;}
+.as2{font-size:11px;color:rgba(255,255,255,0.78);}
+.ac{background:transparent;border:0.5px solid rgba(255,255,255,0.38);border-radius:10px;color:rgba(255,255,255,0.78);font-size:11px;padding:3px 10px;cursor:pointer;flex-shrink:0;}
+.gr{display:flex;align-items:center;gap:6px;margin-bottom:6px;}
+.gv{font-size:12px;color:var(--text2);}
+.eb{background:transparent;border:none;cursor:pointer;color:var(--mid);font-size:13px;padding:0 2px;}
+.gew{display:none;align-items:center;gap:6px;margin-bottom:8px;flex-wrap:wrap;}
+.gew input{padding:4px 10px;font-size:13px;border-radius:20px;border:0.5px solid var(--border);background:rgba(255,255,255,0.8);color:var(--text);width:130px;}
+.gsb{font-size:12px;padding:4px 12px;border-radius:20px;border:0.5px solid var(--mid);background:transparent;color:var(--deep);cursor:pointer;}
+.gcb2{font-size:12px;padding:4px 10px;border-radius:20px;border:0.5px solid var(--border);background:transparent;color:var(--text2);cursor:pointer;}
+.mbb{padding-bottom:1rem;margin-bottom:1rem;border-bottom:0.5px solid rgba(201,149,142,0.18);}
+.mbb:last-child{border-bottom:none;}
+.mbh{display:flex;align-items:center;justify-content:space-between;margin-bottom:.55rem;}
+.mbl{font-size:13px;font-weight:500;color:var(--text);}
+.rp{font-size:11px;padding:2px 10px;border-radius:20px;background:rgba(201,149,142,0.18);color:var(--deep);border:0.5px solid var(--border);font-weight:500;}
+.br2{display:flex;gap:5px;flex-wrap:wrap;}
+.bc{border-radius:12px;padding:.45rem .55rem;text-align:center;border:0.5px solid rgba(201,149,142,0.18);background:rgba(242,228,225,0.55);display:flex;flex-direction:column;align-items:center;min-width:54px;flex:1;}
+.bc.gold{background:rgba(255,248,220,0.9);border-color:#FFD700;}
+.bc.silver{background:rgba(245,245,245,0.9);border-color:#C0C0C0;}
+.bc.bronze{background:rgba(255,240,224,0.9);border-color:#CD7F32;}
+.bc.flower{background:rgba(255,240,245,0.9);border-color:#FFB6C1;}
+.bc.locked{opacity:.16;filter:grayscale(1);}
+.bi{font-size:19px;margin-bottom:2px;}
+.bn2{font-size:10px;font-weight:500;color:var(--text);}
+.bc.gold .bn2{color:#7A5500;}.bc.silver .bn2{color:#555;}.bc.bronze .bn2{color:#6B3A1F;}.bc.flower .bn2{color:#99235A;}
+.bt2{font-size:9px;color:var(--text2);margin-top:1px;}
+.sync-btn{width:100%;padding:8px;font-size:12px;border-radius:20px;border:0.5px solid var(--mid);background:transparent;color:var(--deep);cursor:pointer;margin-bottom:.6rem;}
+.sync-st{font-size:11px;color:var(--text2);text-align:center;margin-bottom:.6rem;min-height:16px;}
+.adm-note{font-size:11px;color:var(--text2);text-align:center;padding:.6rem;background:rgba(237,216,212,0.35);border-radius:10px;margin-top:.5rem;}
+.cal-nav{display:flex;align-items:center;justify-content:space-between;margin-bottom:1rem;}
+.cnb{background:transparent;border:0.5px solid var(--border);color:var(--dark);border-radius:20px;padding:4px 14px;cursor:pointer;font-size:12px;}
+.cml{font-family:'Cormorant Garamond',serif;font-size:18px;font-weight:400;color:var(--text);letter-spacing:0.05em;}
+.cal-legend{display:flex;gap:12px;margin-bottom:10px;flex-wrap:wrap;}
+.cli{display:flex;align-items:center;gap:5px;font-size:11px;color:var(--text2);}
+.cld{width:11px;height:11px;border-radius:3px;flex-shrink:0;}
+.cal-grid{display:grid;grid-template-columns:repeat(7,1fr);gap:3px;}
+.ch{font-size:11px;color:var(--text2);text-align:center;padding:6px 0;font-weight:500;}
+.ch.sun{color:#B06060;}.ch.sat{color:#608090;}
+.cc{border-radius:8px;display:flex;flex-direction:column;align-items:center;justify-content:center;padding:5px 2px;min-height:42px;border:1.5px solid transparent;}
+.dn{font-size:12px;font-weight:500;color:var(--text);}
+.dn.sun{color:#B06060;}.dn.sat{color:#608090;}
+.cc.empty{opacity:0;}
+.cc.today{border-color:var(--mid);}
+.cc.streamed{background:rgba(201,149,142,0.18);}.cc.streamed .dn{color:var(--deep);}
+.cc.long-stream{background:var(--mid);}.cc.long-stream .dn{color:#fff;}
+.dtag{font-size:10px;color:var(--dark);margin-top:2px;font-weight:500;}
+.cc.long-stream .dtag{color:rgba(255,255,255,0.85);}
+.cal-stats{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:8px;margin-top:1rem;}
+.cs2{background:rgba(237,216,212,0.55);border-radius:10px;padding:.7rem;text-align:center;}
+.csn{font-family:'Cormorant Garamond',serif;font-size:20px;font-weight:400;color:var(--text);}
+.csl{font-size:10px;color:var(--text2);margin-top:2px;}
+.cms{margin-top:1.25rem;padding-top:.9rem;border-top:0.5px solid rgba(201,149,142,0.2);}
+.cmt{font-size:13px;font-weight:500;color:var(--text);margin-bottom:.6rem;}
+.cll{display:flex;gap:14px;margin-bottom:10px;}
+.cli2{display:flex;align-items:center;gap:5px;font-size:11px;color:var(--text2);}
+.cld2{width:10px;height:10px;border-radius:2px;flex-shrink:0;}
+.cmr{display:flex;align-items:center;gap:8px;margin-bottom:8px;}
+.cmlb{font-size:12px;color:var(--text2);width:32px;text-align:right;flex-shrink:0;font-weight:500;}
+.cmbs{flex:1;display:flex;flex-direction:column;gap:3px;}
+.cmbw{display:flex;align-items:center;gap:5px;}
+.cmbt{font-size:9px;color:var(--text2);width:22px;flex-shrink:0;}
+.cmbg{flex:1;background:rgba(201,149,142,0.12);border-radius:3px;height:10px;}
+.cmbf{height:10px;border-radius:3px;transition:width .5s;}
+.cmbv{font-size:11px;color:var(--dark);width:48px;flex-shrink:0;text-align:right;font-weight:500;}
+.hmc{overflow-x:auto;}
+.hmt{border-collapse:collapse;min-width:100%;}
+.hmt th{font-size:10px;color:var(--text2);font-weight:400;text-align:center;padding:2px 1px;white-space:nowrap;}
+.hmt th.dh{text-align:right;padding-right:8px;min-width:32px;}
+.hmt td.dl{font-size:11px;color:var(--text2);text-align:right;padding-right:8px;white-space:nowrap;}
+.hmt td.cl{width:22px;height:22px;padding:0;border-radius:3px;}
+.hsr{margin-top:1rem;}
+.hbr{display:flex;align-items:center;gap:8px;margin-bottom:4px;}
+.hbl{font-size:11px;color:var(--text2);width:40px;text-align:right;flex-shrink:0;}
+.hbb{flex:1;background:rgba(201,149,142,0.13);border-radius:3px;height:13px;}
+.hbf{height:13px;border-radius:3px;}
+.hbv{font-size:11px;color:var(--dark);width:44px;flex-shrink:0;font-weight:500;}
+.lgb{display:flex;align-items:center;gap:6px;margin-top:12px;font-size:11px;color:var(--text2);}
+.lgc{display:flex;gap:3px;}
+.lgi{width:15px;height:15px;border-radius:2px;}
+.pk{display:inline-block;font-size:11px;padding:2px 8px;border-radius:10px;background:rgba(237,216,212,0.7);color:var(--deep);font-weight:500;margin-left:8px;}
+.cbanner{background:linear-gradient(135deg,rgba(125,74,69,0.88),rgba(160,104,96,0.88));border-radius:16px;padding:1.5rem 1.25rem;margin-bottom:1rem;text-align:center;}
+.cbanner-t{font-family:'Cormorant Garamond',serif;font-size:20px;font-weight:400;color:#fff;letter-spacing:0.05em;}
+.ainfo{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-bottom:10px;}
+.ail{font-size:11px;color:var(--text2);margin-bottom:4px;}
+.aiv{font-size:14px;font-weight:500;color:var(--text);}
+.gfp{background:rgba(237,216,212,0.45);border-radius:14px;padding:1.75rem;text-align:center;}
+.gfpt{font-size:14px;font-weight:500;color:var(--text);margin-bottom:6px;}
+.gfps{font-size:12px;color:var(--dark);margin-bottom:1rem;line-height:1.7;}
+.gfurl{width:100%;padding:8px 14px;font-size:12px;border-radius:20px;border:0.5px solid var(--border);background:rgba(255,255,255,0.8);color:var(--text);margin-bottom:10px;}
+.gfbtn{font-size:12px;padding:8px 22px;border-radius:20px;border:none;background:var(--dark);color:#fff;cursor:pointer;}
+.sw{background:rgba(237,216,212,0.35);border-radius:14px;padding:1rem;margin-bottom:1rem;display:none;}
+.swt{font-size:13px;font-weight:500;color:var(--deep);margin-bottom:.6rem;}
+.swn{font-size:11px;color:var(--text2);margin-bottom:.75rem;line-height:1.7;background:rgba(255,255,255,0.5);border-radius:10px;padding:.6rem .8rem;}
+.sinput{width:100%;padding:7px 12px;font-size:12px;border-radius:20px;border:0.5px solid var(--border);background:rgba(255,255,255,0.8);color:var(--text);margin-bottom:8px;}
+.sbtn{font-size:12px;padding:7px 18px;border-radius:20px;border:none;background:var(--deep);color:#fff;cursor:pointer;}
+canvas#fwc{position:fixed;top:0;left:0;width:100%;height:100%;pointer-events:none;z-index:100;}
+</style>
+</head>
+<body>
+<div class="bg-texture"></div>
+<canvas id="fwc"></canvas>
+
+<!-- ロゴ右下固定 -->
+<div class="corner-logo">
+  <img src="https://i.imgur.com/placeholder.png" alt="Twinkle" id="corner-img">
+</div>
+
+<div class="container">
+
+<!-- ログイン画面 -->
+<div id="login-screen" class="login-screen">
+  <div class="login-logo">
+    <img src="https://i.imgur.com/placeholder.png" alt="Twinkle mamacreator" id="logo-img">
+  </div>
+  <div class="login-title">Twinkle</div>
+  <div class="login-sub">LIVER DASHBOARD</div>
+  <div class="login-form">
+    <input class="li" type="text" id="ln" placeholder="ライバー名">
+    <input class="li" type="password" id="lp" placeholder="パスワード">
+    <button class="lb" onclick="doLogin()">ログイン</button>
+    <div class="lerr" id="lerr">ライバー名またはパスワードを入力してください</div>
+    <div class="lsw" onclick="toggleAdmin()">事務所スタッフの方はこちら</div>
+  </div>
+  <div class="asub" id="asub">
+    <input class="li" type="password" id="ap" placeholder="管理者パスワード" style="margin-top:10px;">
+    <button class="lb" onclick="doAdminLogin()" style="background:linear-gradient(135deg,#7D4A45,#A06860);">管理者ログイン</button>
+    <div class="lerr" id="aerr">パスワードが正しくありません</div>
+  </div>
+</div>
+
+<!-- メインアプリ -->
+<div class="wrap" id="main-app">
+
+  <!-- 管理者バー -->
+  <div id="admin-bar" style="display:none;background:rgba(125,74,69,0.1);border-radius:14px;padding:.75rem 1rem;margin-bottom:1rem;border:0.5px solid rgba(125,74,69,0.2);">
+    <div style="display:flex;align-items:center;justify-content:space-between;">
+      <span style="font-size:12px;font-weight:500;color:var(--deep);">管理者モード</span>
+      <button onclick="toggleSheets()" style="font-size:11px;padding:3px 10px;border-radius:10px;border:0.5px solid var(--deep);background:transparent;color:var(--deep);cursor:pointer;">Google Sheets 連携</button>
+    </div>
+    <div class="sw" id="sw">
+      <div class="swt">Google Sheets 連携設定</div>
+      <div class="swn">Apps ScriptのデプロイURLを貼り付けてください。<br><strong style="color:var(--deep);">列形式：</strong>A:年月(2025-4)　B:ダイヤ数　C:配信時間(h)　D:1h以上配信日数　E:事務所順位</div>
+      <input class="sinput" type="url" id="surl" placeholder="https://script.google.com/macros/s/xxxxx/exec">
+      <button class="sbtn" onclick="saveSheets()">保存して同期</button>
+    </div>
+  </div>
+
+  <div class="nav">
+    <button class="nb on" onclick="sp('dashboard',this)">ダッシュボード</button>
+    <button class="nb" onclick="sp('badge',this)">バッジ・順位</button>
+    <button class="nb" onclick="sp('calendar',this)">カレンダー</button>
+    <button class="nb" onclick="sp('monthly',this)">月間グラフ</button>
+    <button class="nb" onclick="sp('heatmap',this)">配信時間帯</button>
+    <button class="nb cb" onclick="sp('contact',this)">お問い合わせ</button>
+  </div>
+
+  <!-- ダッシュボード -->
+  <div class="pg on" id="pg-dashboard">
+    <div id="alert-wrap"></div>
+    <div class="sl">今月の実績</div>
+    <div class="mg">
+      <div class="mc"><div class="ml">ダイヤ数</div><div class="mv" id="m-dia">0</div><div class="ms" id="m-dia-s">目標比 —</div></div>
+      <div class="mc"><div class="ml">配信時間</div><div class="mv" id="m-h">0.0時間</div><div class="ms" id="m-h-s">目標比 —</div></div>
+      <div class="mc"><div class="ml">1h以上配信日数</div><div class="mv" id="m-d">0日</div><div class="ms" id="m-d-s">目標比 —</div></div>
+    </div>
+    <div class="sl">目標までの進捗</div>
+    <div class="card">
+      <div class="ph"><span class="pt">月間ダイヤ目標</span><div style="display:flex;align-items:center;gap:6px;"><span style="font-size:13px;font-weight:500;color:var(--dark);" id="dia-p">—</span><button class="eb" onclick="tEdit('dia')">✎</button></div></div>
+      <div class="gr"><span class="gv">目標: <span id="dia-gd">1,600,000</span></span></div>
+      <div class="gew" id="dia-edit"><input type="number" id="dia-gi" placeholder="例: 1600000" min="0"><button class="gsb" onclick="sGoal('dia')">保存</button><button class="gcb2" onclick="tEdit('dia')">キャンセル</button></div>
+      <div class="bb"><div class="bf" id="dia-b" style="width:0%;"></div></div>
+      <div class="bn"><span id="dia-a">0 達成</span><span id="dia-gl">目標 1,600,000</span></div>
+    </div>
+    <div class="card">
+      <div class="ph"><span class="pt">月間配信時間</span><div style="display:flex;align-items:center;gap:6px;"><span style="font-size:13px;font-weight:500;color:var(--dark);" id="h-p">—</span><button class="eb" onclick="tEdit('hour')">✎</button></div></div>
+      <div class="gr"><span class="gv">目標: <span id="hour-gd">120</span>時間</span></div>
+      <div class="gew" id="hour-edit"><input type="number" id="hour-gi" placeholder="例: 120" min="0"><button class="gsb" onclick="sGoal('hour')">保存</button><button class="gcb2" onclick="tEdit('hour')">キャンセル</button></div>
+      <div class="bb"><div class="bf" id="h-b" style="width:0%;"></div></div>
+      <div class="bn"><span id="h-a">0時間 達成</span><span id="hour-gl">目標 120時間</span></div>
+    </div>
+    <div class="card" style="margin-bottom:1.5rem;">
+      <div class="ph"><span class="pt">1時間以上配信日数</span><span style="font-size:13px;font-weight:500;color:var(--dark);" id="d-p">—</span></div>
+      <div class="bb"><div class="bf" id="d-b" style="width:0%;"></div></div>
+      <div class="bn"><span id="d-a">0日 達成</span><span>目標 20日</span></div>
+    </div>
+    <div class="card">
+      <div class="ct">配信時間を入力</div>
+      <div class="sf"><input type="time" id="st" value="20:00"><span>〜</span><input type="time" id="et" value="23:00"><button class="ab" onclick="addS()">追加</button></div>
+      <ul class="sl2" id="slist"></ul>
+      <div class="tr2"><span>今月の合計配信時間</span><span id="td">0時間0分</span></div>
+    </div>
+  </div>
+
+  <!-- バッジ・順位 -->
+  <div class="pg" id="pg-badge">
+    <div class="card">
+      <button class="sync-btn" onclick="syncSheets()">Google Sheetsからデータを更新</button>
+      <div class="sync-st" id="sync-st"></div>
+      <div id="badge-history"></div>
+      <div class="adm-note">バッジ・順位データは事務所が Google Sheets で管理しています</div>
+    </div>
+  </div>
+
+  <!-- カレンダー -->
+  <div class="pg" id="pg-calendar">
+    <div class="card">
+      <div class="cal-nav"><button class="cnb" onclick="chMonth(-1)">＜</button><span class="cml" id="cml"></span><button class="cnb" onclick="chMonth(1)">＞</button></div>
+      <div class="cal-legend">
+        <div class="cli"><div class="cld" style="background:var(--mid);"></div>2時間以上</div>
+        <div class="cli"><div class="cld" style="background:rgba(201,149,142,0.22);border:0.5px solid var(--border);"></div>2時間未満</div>
+        <div class="cli"><div class="cld" style="border:1.5px solid var(--mid);background:transparent;"></div>今日</div>
+      </div>
+      <div class="cal-grid" id="cal-grid"></div>
+      <div class="cal-stats" id="cal-stats"></div>
+      <div class="cms">
+        <div class="cmt">過去12ヶ月 月別実績</div>
+        <div class="cll">
+          <div class="cli2"><div class="cld2" style="background:var(--mid);"></div>配信時間</div>
+          <div class="cli2"><div class="cld2" style="background:rgba(201,149,142,0.4);border:0.5px solid var(--mid);"></div>1h以上配信日数</div>
+        </div>
+        <div id="cal-month-bars"></div>
+      </div>
+    </div>
+  </div>
+
+  <!-- 月間グラフ -->
+  <div class="pg" id="pg-monthly">
+    <div class="card"><div class="ct">月別 配信時間（過去12ヶ月）</div><div style="position:relative;width:100%;height:240px;"><canvas id="sc" role="img" aria-label="月別配信時間"></canvas></div></div>
+    <div class="card"><div class="ct">月別 ダイヤ数（過去12ヶ月）</div><div style="position:relative;width:100%;height:240px;"><canvas id="dc" role="img" aria-label="月別ダイヤ数"></canvas></div></div>
+  </div>
+
+  <!-- 配信時間帯 -->
+  <div class="pg" id="pg-heatmap">
+    <div class="card">
+      <div class="ct">月間 配信時間帯マップ <span class="pk" id="pkb">ピーク帯: —</span></div>
+      <div class="cs">縦軸：日にち　横軸：9時〜翌9時　色が濃いほど配信時間が長い</div>
+      <div class="hmc"><table class="hmt"><thead><tr id="hmh"></tr></thead><tbody id="hmb"></tbody></table></div>
+      <div class="lgb"><span>少</span><div class="lgc">
+        <div class="lgi" style="background:rgba(201,149,142,0.12);border:0.5px solid var(--border);"></div>
+        <div class="lgi" style="background:#DDB0A8;"></div>
+        <div class="lgi" style="background:#C9958E;"></div>
+        <div class="lgi" style="background:#A06860;"></div>
+        <div class="lgi" style="background:#7D4A45;"></div>
+      </div><span>多</span></div>
+    </div>
+    <div class="card"><div class="ct">時間帯別 合計配信時間</div><div class="hsr" id="hsr"></div></div>
+  </div>
+
+  <!-- お問い合わせ -->
+  <div class="pg" id="pg-contact">
+    <div class="cbanner"><div class="cbanner-t">運営スタッフ 問い合わせ窓口</div></div>
+    <div class="card" style="margin-bottom:.75rem;">
+      <div style="font-size:13px;font-weight:500;color:var(--text);margin-bottom:.75rem;">自動入力情報</div>
+      <div class="ainfo">
+        <div><div class="ail">ライバー名</div><div class="aiv" id="c-name">—</div></div>
+        <div><div class="ail">ID</div><div class="aiv" id="c-id">—</div></div>
+      </div>
+    </div>
+    <div id="gform-area">
+      <div class="gfp">
+        <div class="gfpt">GoogleフォームのURLを貼り付けてください</div>
+        <div class="gfps">フォームURL末尾を <code style="background:rgba(201,149,142,0.28);padding:1px 5px;border-radius:4px;font-size:11px;">/viewform?embedded=true</code> に変更してください</div>
+        <input class="gfurl" type="url" id="gfurl" placeholder="https://docs.google.com/forms/d/xxxxx/viewform?embedded=true">
+        <br><button class="gfbtn" onclick="embedForm()">フォームを表示する</button>
+      </div>
+    </div>
+  </div>
+
+</div><!-- end main-app -->
+</div><!-- end container -->
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/4.4.1/chart.umd.js"></script>
+<script>
+// ========== 設定 ==========
+// ★ ここにロゴ画像のURLを入れてください（Googleドライブの共有リンクなど）
+var LOGO_URL = '';
+// ★ Apps ScriptのURLを直接入れることもできます
+var DEFAULT_SHEETS_URL = '';
+// ★ 管理者パスワード
+var ADMIN_PASS = 'twinkle2025';
+// ==========================
+
+// ロゴ設定
+if(LOGO_URL){
+  document.getElementById('logo-img').src = LOGO_URL;
+  document.getElementById('corner-img').src = LOGO_URL;
+}
+
+var GH=120,GD=20,GDia=1600000,DAYS=30;
+var streams=[],diamonds={},sci=null,dci=null;
+var PK=['rgba(201,149,142,0.12)','#DDB0A8','#C9958E','#A06860','#7D4A45'];
+var prevDB='',prevHB='';
+var calYear=new Date().getFullYear(),calMonth=new Date().getMonth();
+var livername='',liverid='',sheetsUrl=DEFAULT_SHEETS_URL;
+var monthData={};
+var HOUR_ORDER=[];
+for(var _i=0;_i<24;_i++) HOUR_ORDER.push((_i+9)%24);
+
+// サンプルデータ
+(function(){
+  var now=new Date(),y=now.getFullYear(),m=now.getMonth();
+  for(var i=11;i>=1;i--){
+    var d=new Date(y,m-i,1),k=d.getFullYear()+'-'+(d.getMonth()+1);
+    monthData[k]={dia:0,hours:0,longDays:0,rank:null};
+  }
+})();
+
+function doLogin(){
+  var n=document.getElementById('ln').value.trim(),p=document.getElementById('lp').value;
+  if(!n||!p){document.getElementById('lerr').style.display='block';return;}
+  livername=n;liverid=n.toLowerCase().replace(/\s+/g,'_')+'_id';
+  document.getElementById('login-screen').style.display='none';
+  document.getElementById('main-app').style.display='block';
+  if(sheetsUrl) syncSheets();
+  checkAlert();renderBadges();
+}
+function toggleAdmin(){
+  var w=document.getElementById('asub');w.style.display=w.style.display==='none'?'block':'none';
+}
+function doAdminLogin(){
+  var p=document.getElementById('ap').value;
+  if(p!==ADMIN_PASS){document.getElementById('aerr').style.display='block';return;}
+  livername='管理者';liverid='admin';
+  document.getElementById('login-screen').style.display='none';
+  document.getElementById('main-app').style.display='block';
+  document.getElementById('admin-bar').style.display='block';
+  if(sheetsUrl) syncSheets();
+  checkAlert();renderBadges();
+}
+function toggleSheets(){
+  var w=document.getElementById('sw');w.style.display=w.style.display==='none'?'block':'none';
+  if(sheetsUrl) document.getElementById('surl').value=sheetsUrl;
+}
+function saveSheets(){
+  var u=document.getElementById('surl').value.trim();
+  if(!u){alert('URLを入力してください');return;}
+  sheetsUrl=u;
+  localStorage.setItem('twinkle_sheets_url',u);
+  syncSheets();
+}
+function syncSheets(){
+  var st=document.getElementById('sync-st');
+  if(!sheetsUrl){st.textContent='Sheets URLが未設定です';return;}
+  st.textContent='同期中...';
+  fetch(sheetsUrl)
+    .then(function(r){return r.json();})
+    .then(function(data){
+      if(data&&data.rows){
+        data.rows.forEach(function(r){
+          if(r.key&&r.key!=='年月'){
+            monthData[r.key]={dia:r.dia||0,hours:r.hours||0,longDays:r.longDays||0,rank:r.rank||null};
+          }
+        });
+        renderBadges();renderCalBars();rMon();
+        st.textContent='最終同期: '+new Date().toLocaleTimeString('ja-JP');
+      }
+    })
+    .catch(function(e){st.textContent='同期失敗: '+e.message;});
+}
+
+// ローカルストレージからURL復元
+(function(){
+  var saved=localStorage.getItem('twinkle_sheets_url');
+  if(saved) sheetsUrl=saved;
+})();
+
+// 花火
+var fwC=document.getElementById('fwc'),fwX=fwC.getContext('2d'),fwP=[],fwOn=false;
+function szFW(){fwC.width=window.innerWidth;fwC.height=window.innerHeight;}
+szFW();window.addEventListener('resize',szFW);
+function FP(x,y,c){this.x=x;this.y=y;this.c=c;this.vx=(Math.random()-.5)*9;this.vy=(Math.random()-.5)*9-2;this.a=1;this.r=Math.random()*3+1.5;}
+FP.prototype.upd=function(){this.x+=this.vx;this.y+=this.vy;this.vy+=.18;this.a-=.02;};
+FP.prototype.drw=function(){fwX.save();fwX.globalAlpha=Math.max(0,this.a);fwX.fillStyle=this.c;fwX.beginPath();fwX.arc(this.x,this.y,this.r,0,Math.PI*2);fwX.fill();fwX.restore();};
+function launch(){var x=Math.random()*fwC.width*.8+fwC.width*.1,y=Math.random()*180+60;var cs=['#FFD700','#FF69B4','#FFAAA0','#DDB0A8','#FFC0CB'];var c=cs[Math.floor(Math.random()*cs.length)];for(var i=0;i<70;i++) fwP.push(new FP(x,y,c));}
+function fwLoop(){fwX.clearRect(0,0,fwC.width,fwC.height);fwP=fwP.filter(function(p){return p.a>0;});fwP.forEach(function(p){p.upd();p.drw();});if(fwOn||fwP.length>0) requestAnimationFrame(fwLoop);}
+function startFW(sec){szFW();fwOn=true;fwLoop();var n=0,iv=setInterval(function(){launch();n++;if(n>=sec*3){clearInterval(iv);fwOn=false;}},350);}
+
+function checkAlert(){
+  var wrap=document.getElementById('alert-wrap');wrap.innerHTML='';
+  if(!streams.length) return;
+  var days=streams.map(function(s){return s.day;}),mx=Math.max.apply(null,days),gap=0;
+  for(var d=mx;d>=1;d--){if(days.indexOf(d)>=0) break;gap++;}
+  if(gap>=3){var b=document.createElement('div');b.className='abanner';b.innerHTML='<div class="ai2">!</div><div class="ab2"><div class="at">'+gap+'日間配信がありません</div><div class="as2">最後の配信から'+gap+'日が経過しています。今日配信してみましょう！</div></div><button class="ac" onclick="this.parentElement.remove()">閉じる</button>';wrap.appendChild(b);}
+}
+
+function tEdit(t){var el=document.getElementById(t+'-edit'),on=el.style.display==='flex';el.style.display=on?'none':'flex';if(!on){var i=document.getElementById(t+'-gi');i.value=t==='dia'?GDia:GH;i.focus();}}
+function sGoal(t){var v=parseInt(document.getElementById(t+'-gi').value);if(isNaN(v)||v<=0){alert('正しい数値を入力してください');return;}if(t==='dia'){GDia=v;document.getElementById('dia-gd').textContent=v.toLocaleString();document.getElementById('dia-gl').textContent='目標 '+v.toLocaleString();}else{GH=v;document.getElementById('hour-gd').textContent=v;document.getElementById('hour-gl').textContent='目標 '+v+'時間';}document.getElementById(t+'-edit').style.display='none';uMet();}
+
+var DBA=[{icon:'🌟',name:'ゴールド',cls:'gold',thr:1600000},{icon:'⭐',name:'シルバー',cls:'silver',thr:1000000},{icon:'🌠',name:'ブロンズ',cls:'bronze',thr:500000},{icon:'🌸',name:'お花',cls:'flower',thr:200000}];
+var HBA=[{icon:'🏆',name:'ゴールド',cls:'gold',thr:120},{icon:'🥈',name:'シルバー',cls:'silver',thr:100},{icon:'🥉',name:'ブロンズ',cls:'bronze',thr:80},{icon:'🌺',name:'お花',cls:'flower',thr:60}];
+function gBC(dia,h){var dc='',hc='';DBA.forEach(function(b){if(!dc&&dia>=b.thr) dc=b.cls;});HBA.forEach(function(b){if(!hc&&h>=b.thr) hc=b.cls;});return{dia:dc,hour:hc};}
+function bChip(b,ok,type){var d=document.createElement('div');d.className='bc'+(ok?' '+b.cls:' locked');d.innerHTML='<span class="bi">'+b.icon+'</span><span class="bn2">'+b.name+'</span><span class="bt2">'+type+'</span>';return d;}
+
+function renderBadges(){
+  var con=document.getElementById('badge-history');con.innerHTML='';
+  var now=new Date(),y=now.getFullYear(),m=now.getMonth(),months=[];
+  for(var i=11;i>=0;i--){var d=new Date(y,m-i,1);months.push({key:d.getFullYear()+'-'+(d.getMonth()+1),label:d.getFullYear()+'年'+(d.getMonth()+1)+'月',isCur:i===0});}
+  months.reverse();
+  var eD='',eH='';
+  months.forEach(function(mo){
+    var dia,hours,rank=null;
+    if(mo.isCur){dia=Object.values(diamonds).reduce(function(a,b){return a+b;},0);hours=streams.reduce(function(a,b){return a+b.dur;},0)/60;}
+    else{var md=monthData[mo.key]||{dia:0,hours:0,rank:null};dia=md.dia;hours=md.hours;rank=md.rank;}
+    var cls=gBC(dia,hours);if(!eD&&cls.dia) eD=cls.dia;if(!eH&&cls.hour) eH=cls.hour;
+    var block=document.createElement('div');block.className='mbb';
+    var hdr=document.createElement('div');hdr.className='mbh';
+    var lbl=document.createElement('span');lbl.className='mbl';lbl.textContent=mo.label+(mo.isCur?' (今月)':'');hdr.appendChild(lbl);
+    if(rank&&rank<=10){var rp=document.createElement('span');rp.className='rp';rp.textContent='事務所 '+rank+'位';hdr.appendChild(rp);}
+    block.appendChild(hdr);
+    var row=document.createElement('div');row.className='br2';
+    DBA.forEach(function(b){row.appendChild(bChip(b,dia>=b.thr,'ダイヤ'));});
+    HBA.forEach(function(b){row.appendChild(bChip(b,hours>=b.thr,'時間'));});
+    block.appendChild(row);
+    var info=document.createElement('div');info.style.cssText='font-size:11px;color:var(--text2);margin-top:5px;';
+    info.textContent='ダイヤ '+dia.toLocaleString()+' / 配信 '+Math.round(hours)+'時間';
+    block.appendChild(info);con.appendChild(block);
+  });
+  if((eD&&eD!==prevDB)||(eH&&eH!==prevHB)) startFW(4);
+  prevDB=eD;prevHB=eH;
+}
+
+function renderCalBars(){
+  var el=document.getElementById('cal-month-bars');el.innerHTML='';
+  var now=new Date(),y=now.getFullYear(),m=now.getMonth(),months=[];
+  for(var i=11;i>=1;i--){var d=new Date(y,m-i,1);months.push({key:d.getFullYear()+'-'+(d.getMonth()+1),label:(d.getMonth()+1)+'月'});}
+  var mxH=0,mxD=0;
+  months.forEach(function(mo){var d=monthData[mo.key]||{hours:0,longDays:0};if(d.hours>mxH) mxH=d.hours;if((d.longDays||0)>mxD) mxD=d.longDays||0;});
+  if(mxH<1) mxH=1;if(mxD<1) mxD=1;
+  months.forEach(function(mo){
+    var d=monthData[mo.key]||{hours:0,longDays:0};
+    var hw=Math.round(d.hours/mxH*100),dw=Math.round((d.longDays||0)/mxD*100);
+    var row=document.createElement('div');row.className='cmr';
+    var lbl=document.createElement('div');lbl.className='cmlb';lbl.textContent=mo.label;
+    var bars=document.createElement('div');bars.className='cmbs';
+    bars.innerHTML='<div class="cmbw"><span class="cmbt">配信</span><div class="cmbg"><div class="cmbf" style="width:'+hw+'%;background:var(--mid);"></div></div><span class="cmbv">'+Math.round(d.hours)+'時間</span></div><div class="cmbw"><span class="cmbt">日数</span><div class="cmbg"><div class="cmbf" style="width:'+dw+'%;background:rgba(201,149,142,0.42);border:0.5px solid var(--mid);"></div></div><span class="cmbv">'+(d.longDays||0)+'日</span></div>';
+    row.appendChild(lbl);row.appendChild(bars);el.appendChild(row);
+  });
+}
+
+function chMonth(d){calMonth+=d;if(calMonth>11){calMonth=0;calYear++;}if(calMonth<0){calMonth=11;calYear--;}renderCal();}
+function renderCal(){
+  var now=new Date(),tY=now.getFullYear(),tM=now.getMonth(),tD=now.getDate();
+  var first=new Date(calYear,calMonth,1).getDay(),last=new Date(calYear,calMonth+1,0).getDate();
+  document.getElementById('cml').textContent=calYear+'年'+(calMonth+1)+'月';
+  var sd={};streams.forEach(function(s){sd[s.day]=s.dur;});
+  var days=['日','月','火','水','木','金','土'];
+  var grid=document.getElementById('cal-grid');grid.innerHTML='';
+  days.forEach(function(d,i){var h=document.createElement('div');h.className='ch'+(i===0?' sun':i===6?' sat':'');h.textContent=d;grid.appendChild(h);});
+  for(var i=0;i<first;i++){var e=document.createElement('div');e.className='cc empty';grid.appendChild(e);}
+  var sC=0,tMin=0,lC=0;
+  for(var d2=1;d2<=last;d2++){
+    var dur=sd[d2]||0,isT=(calYear===tY&&calMonth===tM&&d2===tD),isS=dur>0,isL=dur>=120;
+    if(isS){sC++;tMin+=dur;if(isL) lC++;}
+    var dow=(first+d2-1)%7;
+    var cls='cc'+(isL?' long-stream':isS?' streamed':'')+(isT?' today':'');
+    var nCls='dn'+(dow===0?' sun':dow===6?' sat':'');
+    var dTag='';if(isS){var dh=Math.floor(dur/60),dm=dur%60;dTag='<div class="dtag">'+dh+'時間'+(dm>0?dm+'分':'')+'</div>';}
+    var cell=document.createElement('div');cell.className=cls;cell.innerHTML='<div class="'+nCls+'">'+d2+'</div>'+dTag;
+    grid.appendChild(cell);
+  }
+  var stats=document.getElementById('cal-stats');stats.innerHTML='';
+  var th=Math.floor(tMin/60),tm=tMin%60;
+  [{num:sC+'日',label:'配信日数'},{num:th+'時間'+(tm>0?tm+'分':''),label:'合計配信時間'},{num:lC+'日',label:'2h以上配信日'}].forEach(function(it){var d=document.createElement('div');d.className='cs2';d.innerHTML='<div class="csn">'+it.num+'</div><div class="csl">'+it.label+'</div>';stats.appendChild(d);});
+  renderCalBars();
+}
+
+function sp(n,b){
+  document.querySelectorAll('.pg').forEach(function(p){p.classList.remove('on');});
+  document.querySelectorAll('.nb').forEach(function(x){x.classList.remove('on');});
+  document.getElementById('pg-'+n).classList.add('on');b.classList.add('on');
+  if(n==='heatmap') rHM();if(n==='monthly') rMon();
+  if(n==='badge') renderBadges();if(n==='calendar') renderCal();
+  if(n==='contact'){document.getElementById('c-name').textContent=livername;document.getElementById('c-id').textContent=liverid;}
+}
+
+function embedForm(){var u=document.getElementById('gfurl').value.trim();if(!u){alert('URLを入力してください');return;}document.getElementById('gform-area').innerHTML='<iframe src="'+u+'" width="100%" height="650" frameborder="0" style="border-radius:14px;border:0.5px solid var(--border);">読み込み中...</iframe>';}
+
+function t2m(t){var p=t.split(':');return parseInt(p[0])*60+parseInt(p[1]);}
+function addS(){var s=document.getElementById('st').value,e=document.getElementById('et').value;if(!s||!e) return;var sm=t2m(s),em=t2m(e);if(em<=sm){alert('終了時間は開始時間より後にしてください');return;}streams.push({start:s,end:e,dur:em-sm,day:streams.length+1});rList();uMet();checkAlert();}
+function delS(i){streams.splice(i,1);streams.forEach(function(s,idx){s.day=idx+1;});rList();uMet();checkAlert();}
+function rList(){var ul=document.getElementById('slist');ul.innerHTML='';streams.forEach(function(s,i){var h=Math.floor(s.dur/60),m=s.dur%60;var li=document.createElement('li');li.className='si';li.innerHTML='<span>'+s.day+'日 '+s.start+'〜'+s.end+'</span><span class="dur">'+h+'時間'+(m>0?m+'分':'')+'</span><button class="db2" onclick="delS('+i+')">削除</button>';ul.appendChild(li);});}
+function uMet(){
+  var tot=streams.reduce(function(a,b){return a+b.dur;},0);
+  var h=Math.floor(tot/60),m=tot%60,hd=(tot/60).toFixed(1);
+  var ph=Math.min(100,Math.round(tot/(GH*60)*100));
+  var ld=streams.filter(function(s){return s.dur>=60;}).length,pd=Math.min(100,Math.round(ld/GD*100));
+  var tD=Object.values(diamonds).reduce(function(a,b){return a+b;},0),pd2=Math.min(100,Math.round(tD/GDia*100));
+  document.getElementById('td').textContent=h+'時間'+m+'分';
+  document.getElementById('m-h').textContent=hd+'時間';document.getElementById('m-h-s').textContent='目標比 '+ph+'%';
+  document.getElementById('h-p').textContent=ph+'%';document.getElementById('h-b').style.width=ph+'%';document.getElementById('h-a').textContent=hd+'時間 達成';
+  document.getElementById('m-d').textContent=ld+'日';document.getElementById('m-d-s').textContent='目標比 '+pd+'%';
+  document.getElementById('d-p').textContent=pd+'%';document.getElementById('d-b').style.width=pd+'%';document.getElementById('d-a').textContent=ld+'日 達成';
+  document.getElementById('m-dia').textContent=tD.toLocaleString();document.getElementById('m-dia-s').textContent='目標比 '+pd2+'%';
+  document.getElementById('dia-p').textContent=pd2+'%';document.getElementById('dia-b').style.width=pd2+'%';document.getElementById('dia-a').textContent=tD.toLocaleString()+' 達成';
+}
+function rMon(){
+  var now=new Date(),y=now.getFullYear(),m=now.getMonth(),months=[];
+  for(var i=11;i>=0;i--){var d=new Date(y,m-i,1);months.push({key:d.getFullYear()+'-'+(d.getMonth()+1),label:(d.getMonth()+1)+'月',isCur:i===0});}
+  var cD=Object.values(diamonds).reduce(function(a,b){return a+b;},0);
+  var cH=streams.reduce(function(a,b){return a+b.dur;},0)/60;
+  var hData=months.map(function(mo){if(mo.isCur) return Math.round(cH*10)/10;var d=monthData[mo.key];return d?Math.round(d.hours*10)/10:0;});
+  var dData=months.map(function(mo){if(mo.isCur) return cD;var d=monthData[mo.key];return d?d.dia:0;});
+  var lbs=months.map(function(mo){return mo.label;});
+  if(sci){sci.destroy();}
+  sci=new Chart(document.getElementById('sc'),{type:'bar',data:{labels:lbs,datasets:[{data:hData,backgroundColor:lbs.map(function(l,i){return i===11?'#A06860':'#DDB0A8';}),borderRadius:4}]},options:{responsive:true,maintainAspectRatio:false,plugins:{legend:{display:false}},scales:{x:{ticks:{font:{size:10},maxRotation:0},grid:{display:false}},y:{ticks:{callback:function(v){return v+'時間';},font:{size:11}},grid:{color:'rgba(160,104,96,0.1)'}}}}});
+  if(dci){dci.destroy();}
+  dci=new Chart(document.getElementById('dc'),{type:'bar',data:{labels:lbs,datasets:[{data:dData,backgroundColor:lbs.map(function(l,i){return i===11?'#7D4A45':'#C9958E';}),borderRadius:4}]},options:{responsive:true,maintainAspectRatio:false,plugins:{legend:{display:false}},scales:{x:{ticks:{font:{size:10},maxRotation:0},grid:{display:false}},y:{ticks:{callback:function(v){return v>=10000?(v/10000).toFixed(0)+'万':v.toLocaleString();},font:{size:11}},grid:{color:'rgba(160,104,96,0.1)'}}}}});
+}
+function gc(val,max){if(!val) return null;var r=val/max;return r<.25?PK[1]:r<.5?PK[2]:r<.75?PK[3]:PK[4];}
+function rHM(){
+  var grid=[];for(var i=0;i<DAYS;i++) grid.push(new Array(24).fill(0));
+  streams.forEach(function(s){var d=s.day-1;if(d<0||d>=DAYS) return;var sm=t2m(s.start),em=t2m(s.end);for(var h=0;h<24;h++){var hs=h*60,he=hs+60;grid[d][h]+=Math.max(0,Math.min(em,he)-Math.max(sm,hs));}});
+  var ht=new Array(24).fill(0);grid.forEach(function(r){r.forEach(function(v,h){ht[h]+=v;});});
+  var av=[];grid.forEach(function(r){r.forEach(function(v){av.push(v);});});
+  var mc=Math.max.apply(null,av);if(mc<1) mc=1;var mh=Math.max.apply(null,ht);if(mh<1) mh=1;
+  var pH=ht.indexOf(Math.max.apply(null,ht));
+  document.getElementById('pkb').textContent='ピーク帯: '+pH+'時〜'+(pH+1)+'時';
+  var hd=document.getElementById('hmh');hd.innerHTML='<th class="dh">日</th>';
+  HOUR_ORDER.forEach(function(h,idx){var th=document.createElement('th');th.textContent=idx%3===0?h+'時':'';hd.appendChild(th);});
+  var bd=document.getElementById('hmb');bd.innerHTML='';
+  grid.forEach(function(row,d){var tr=document.createElement('tr');var dl=document.createElement('td');dl.className='dl';dl.textContent=(d+1)+'日';tr.appendChild(dl);HOUR_ORDER.forEach(function(h){var td=document.createElement('td');td.className='cl';td.style.background=gc(row[h],mc)||PK[0];tr.appendChild(td);});bd.appendChild(tr);});
+  var sr=document.getElementById('hsr');sr.innerHTML='';
+  HOUR_ORDER.forEach(function(h){var val=ht[h],pct=Math.round(val/mh*100),vH=Math.floor(val/60),vM=val%60;var vs=val===0?'—':(vH>0?vH+'時間'+(vM>0?vM+'分':''):vM+'分');var row=document.createElement('div');row.className='hbr';row.innerHTML='<span class="hbl">'+h+'時</span><div class="hbb"><div class="hbf" style="width:'+pct+'%;background:'+(h===pH?'#7D4A45':'#C9958E')+'"></div></div><span class="hbv">'+vs+'</span>';sr.appendChild(row);});
+}
+</script>
+</body>
+</html>
