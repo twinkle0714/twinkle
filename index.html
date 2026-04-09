@@ -338,7 +338,7 @@ canvas#fwc{position:fixed;top:0;left:0;width:100%;height:100%;pointer-events:non
 // ★ ここにロゴ画像のURLを入れてください（Googleドライブの共有リンクなど）
 var LOGO_URL = '';
 // ★ Apps ScriptのURLを直接入れることもできます
-var DEFAULT_SHEETS_URL = '';
+var DEFAULT_SHEETS_URL = 'https://script.google.com/macros/s/AKfycbxDV4ZMrTTRwWLs0UcB6Otfv54H3CeKXWqmVHX5Or6lIebRP5Zwovlc4fItsCDUwM_e/exec';
 // ★ 管理者パスワード
 var ADMIN_PASS = 'twinkle2025';
 // ==========================
@@ -405,20 +405,24 @@ function syncSheets(){
   var st=document.getElementById('sync-st');
   if(!sheetsUrl){st.textContent='Sheets URLが未設定です';return;}
   st.textContent='同期中...';
-  fetch(sheetsUrl)
-    .then(function(r){return r.json();})
-    .then(function(data){
-      if(data&&data.rows){
-        data.rows.forEach(function(r){
-          if(r.key&&r.key!=='年月'){
-            monthData[r.key]={dia:r.dia||0,hours:r.hours||0,longDays:r.longDays||0,rank:r.rank||null};
-          }
-        });
-        renderBadges();renderCalBars();rMon();
-        st.textContent='最終同期: '+new Date().toLocaleTimeString('ja-JP');
-      }
-    })
-    .catch(function(e){st.textContent='同期失敗: '+e.message;});
+  var old=document.getElementById('__ts');
+  if(old) old.parentNode.removeChild(old);
+  window.__twinkleCB=function(data){
+    if(data&&data.rows){
+      data.rows.forEach(function(r){
+        if(r.key&&r.key!='年月'){
+          monthData[r.key]={dia:r.dia||0,hours:r.hours||0,longDays:r.longDays||0,rank:r.rank||null};
+        }
+      });
+      renderBadges();renderCalBars();rMon();
+      st.textContent='最終同期: '+new Date().toLocaleTimeString('ja-JP');
+    }
+  };
+  var s=document.createElement('script');
+  s.id='__ts';
+  s.src=sheetsUrl+'?callback=__twinkleCB&t='+Date.now();
+  s.onerror=function(){st.textContent='同期失敗。URLを確認してください。';};
+  document.head.appendChild(s);
 }
 
 // ローカルストレージからURL復元
